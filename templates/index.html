@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+    <div class="row">
+        <h1 class="text-center">{% block title %} Audio Transcription Comparison {% endblock %}</h1>
+    </div>
+    <div class="row">
+        <div class="card col-md-4 text-center">
+            <h5 class="card-title">ESPnet</h5>
+        </div>
+        <div class="card col-md-4 text-center">
+            <h5 class="card-title">SpeechBrain</h5>
+        </div>
+        <div class="col-md-4 card text-center">
+            <h5 class="card-title">>Wav2Vec2</h5>
+        </div>
+    </div>
+    <div class="row">
+        <button>Record Audio</button>
+    </div>
+    
+{% endblock %}
