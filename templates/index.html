@@ -37,6 +37,7 @@
     </div>
 {% endblock %}
 
+<!--Audio Recording Code taken from https://github.com/duketemon/web-speech-recorder-->
 {% block extra %}
 <script>
     navigator
@@ -59,7 +60,6 @@
         var form = new FormData();
         form.append('file', data, 'data.mp3');
         form.append('title', 'data.mp3');
-        //Chrome inspector shows that the post data includes a file and a title.
         $.ajax({
             type: 'POST',
             url: '/save-record',
@@ -73,7 +73,7 @@
     }
 
     startRecording.onclick = e => {
-        console.log('Recording are started..');
+        console.log('Recording started..');
         startRecording.disabled = true;
         stopRecording.disabled = false;
         audioChunks = [];
@@ -81,7 +81,7 @@
     };
 
     stopRecording.onclick = e => {
-        console.log("Recording are stopped.");
+        console.log("Recording stopped.");
         startRecording.disabled = false;
         stopRecording.disabled = true;
         rec.stop();
