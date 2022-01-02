@@ -11,21 +11,21 @@
             <div class="main">
                 <h5 class="card-title">ESPnet</h5>
                 <div>Transcription:</div>
-                <div class="transcript">absudaidjoiejfoiwfjoijefoiewjfoiewjfoiwejfoiewjfoiej</div>
+                <div class="transcript">{{enet}}</div>
             </div>
         </div>
         <div class="col-md-4 text-center">
             <div class="main">
                 <h5 class="card-title">SpeechBrain</h5>
                 <div>Transcription:</div>
-                <div class="transcript"></div>
+                <div class="transcript">{{sb}}</div>
             </div>
         </div>
         <div class="col-md-4 text-center">
             <div class="main">
                 <h5 class="card-title">Wav2Vec2</h5>
                 <div>Transcription:</div>
-                <div class="transcript"></div>
+                <div class="transcript">{{w2v2}}</div>
             </div>
         </div>
     </div>
@@ -36,6 +36,8 @@
         </div>
     </div>
 {% endblock %}
+
+<!--TODO: Add time limit to recording-->
 
 <!--Audio Recording Code taken from https://github.com/duketemon/web-speech-recorder-->
 {% block extra %}

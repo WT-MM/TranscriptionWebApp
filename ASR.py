@@ -7,10 +7,8 @@ from speechbrain.pretrained import EncoderDecoderASR
 class ASR:
     def __init__(self):
         #SpeechBrain pretrained model
-        tmpdir = getfixture("tmpdir")
         self.sbmodel = EncoderDecoderASR.from_hparams(
             source="speechbrain/asr-crdnn-rnnlm-librispeech",
-            savedir=tmpdir,
         )
 
         #Wav2Vec2 processor and model
