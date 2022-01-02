@@ -22,8 +22,9 @@ def save_record():
     file_name = str(uuid.uuid4()) + ".mp3"
     full_file_name = os.path.join('tempfiles', file_name)
     file.save(full_file_name)
-    transcript = ASR.w2v2(full_file_name)
+    transcript = transcribe.w2v2(full_file_name)
     os.remove(full_file_name)
+    print(transcript)
 
     return render_template('index.html', w2v2=transcript)
 

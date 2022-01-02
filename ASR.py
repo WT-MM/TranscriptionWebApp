@@ -21,7 +21,8 @@ class ASR:
 
     def w2v2(self, file):
         audio, rate = librosa.load(file, sr=16000)
-        input_values = self.processor(audio, return_tensors="pt", padding="longest", sampling_rate=16000).input_values     
-        logits = self.model(input_values).logits
+        print(audio)
+        input_values = self.w2v2processor(audio, return_tensors="pt", padding="longest", sampling_rate=16000).input_values     
+        logits = self.w2v2model(input_values).logits
         predicted_ids = torch.argmax(logits, dim=-1)
-        return self.processor.batch_decode(predicted_ids)
+        return self.w2v2processor.batch_decode(predicted_ids)
