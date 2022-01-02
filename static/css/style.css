@@ -3,5 +3,28 @@ body{
 }
 
 h1{
-    color:orange;
+    color:blue;
+}
+
+.main{
+    background-color:rgb(240, 250, 255);
+    border:lightgray;
+    border-style:solid;
+    border-radius:1%;
+    border-width:1px;
+    margin-right:10px;
+    margin-left:10px;
+    padding-left:10px;
+    padding-right:10px;
+    height:100%;
+    overflow-wrap:break-word;
+}
+
+.transcript{
+    padding-bottom:5px;
+    margin-top:5px;
+}
+
+.card-title{
+    margin-top:5%;
 }

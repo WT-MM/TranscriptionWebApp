@@ -7,18 +7,84 @@
         <h1 class="text-center">{% block title %} Audio Transcription Comparison {% endblock %}</h1>
     </div>
     <div class="row">
-        <div class="card col-md-4 text-center">
-            <h5 class="card-title">ESPnet</h5>
+        <div class="col-md-4 text-center">
+            <div class="main">
+                <h5 class="card-title">ESPnet</h5>
+                <div>Transcription:</div>
+                <div class="transcript">absudaidjoiejfoiwfjoijefoiewjfoiewjfoiwejfoiewjfoiej</div>
+            </div>
         </div>
-        <div class="card col-md-4 text-center">
-            <h5 class="card-title">SpeechBrain</h5>
+        <div class="col-md-4 text-center">
+            <div class="main">
+                <h5 class="card-title">SpeechBrain</h5>
+                <div>Transcription:</div>
+                <div class="transcript"></div>
+            </div>
         </div>
-        <div class="col-md-4 card text-center">
-            <h5 class="card-title">>Wav2Vec2</h5>
+        <div class="col-md-4 text-center">
+            <div class="main">
+                <h5 class="card-title">Wav2Vec2</h5>
+                <div>Transcription:</div>
+                <div class="transcript"></div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <button>Record Audio</button>
+    <div class="row" style="margin-top: 10vh;">
+        <div class="container text-center">
+            <button id="startRecording">Start recording</button>
+            <button id="stopRecording" disabled>Stop recording</button>
+        </div>
     </div>
-    
+{% endblock %}
+
+{% block extra %}
+<script>
+    navigator
+        .mediaDevices
+        .getUserMedia({audio: true})
+        .then(stream => { handlerFunction(stream) });
+
+    function handlerFunction(stream) {
+        rec = new MediaRecorder(stream);
+        rec.ondataavailable = e => {
+            audioChunks.push(e.data);
+            if (rec.state == "inactive") {
+                let blob = new Blob(audioChunks, {type: 'audio/mpeg-3'});
+                sendData(blob);
+            }
+        }
+    }
+
+    function sendData(data) {
+        var form = new FormData();
+        form.append('file', data, 'data.mp3');
+        form.append('title', 'data.mp3');
+        //Chrome inspector shows that the post data includes a file and a title.
+        $.ajax({
+            type: 'POST',
+            url: '/save-record',
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false
+        }).done(function(data) {
+            console.log(data);
+        });
+    }
+
+    startRecording.onclick = e => {
+        console.log('Recording are started..');
+        startRecording.disabled = true;
+        stopRecording.disabled = false;
+        audioChunks = [];
+        rec.start();
+    };
+
+    stopRecording.onclick = e => {
+        console.log("Recording are stopped.");
+        startRecording.disabled = false;
+        stopRecording.disabled = true;
+        rec.stop();
+    };
+</script>
 {% endblock %}
