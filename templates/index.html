@@ -11,21 +11,21 @@
             <div class="main">
                 <h5 class="card-title">ESPnet</h5>
                 <div>Transcription:</div>
-                <div class="transcript">{{enet}}</div>
+                <div class="transcript" id="enet"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
             <div class="main">
                 <h5 class="card-title">SpeechBrain</h5>
                 <div>Transcription:</div>
-                <div class="transcript">{{sb}}</div>
+                <div class="transcript" id="sb"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
             <div class="main">
                 <h5 class="card-title">Wav2Vec2</h5>
                 <div>Transcription:</div>
-                <div class="transcript">{{w2v2}}</div>
+                <div class="transcript" id="w2v2"></div>
             </div>
         </div>
     </div>
@@ -42,10 +42,12 @@
 <!--Audio Recording Code taken from https://github.com/duketemon/web-speech-recorder-->
 {% block extra %}
 <script>
+    const interval = setInterval(update_values, 5000)
     navigator
         .mediaDevices
         .getUserMedia({audio: true})
         .then(stream => { handlerFunction(stream) });
+
 
     function handlerFunction(stream) {
         rec = new MediaRecorder(stream);
@@ -88,5 +90,16 @@
         stopRecording.disabled = true;
         rec.stop();
     };
+
+    function update_values(){
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        $.getJSON(
+            $SCRIPT_ROOT+"/_words",
+            function(data) {
+                $("#w2v2").text(data.w2v2)
+            }
+        );
+    }
+
 </script>
 {% endblock %}

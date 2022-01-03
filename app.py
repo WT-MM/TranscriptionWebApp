@@ -1,11 +1,13 @@
 import os
 import uuid
-from flask import Flask, render_template, flash, request, redirect
+from flask import Flask, render_template, flash, request, redirect, jsonify
 from ASR import ASR
 
 app = Flask(__name__)
 
 transcribe = ASR()
+
+ttext={"w2v2" : ""}
 
 @app.route('/')
 def index():
@@ -24,10 +26,12 @@ def save_record():
     file.save(full_file_name)
     transcript = transcribe.w2v2(full_file_name)
     os.remove(full_file_name)
-    print(transcript)
+    ttext['w2v2']=transcript[0]
+    return redirect('index')
 
-    return render_template('index.html', w2v2=transcript)
-
+@app.route('/_words', methods=['GET'])
+def words():
+    return jsonify(w2v2=ttext['w2v2'])
 
 @app.errorhandler(404)
 def errorPage(e):

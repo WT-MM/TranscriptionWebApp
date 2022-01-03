@@ -7,9 +7,9 @@ from speechbrain.pretrained import EncoderDecoderASR
 class ASR:
     def __init__(self):
         #SpeechBrain pretrained model
-        self.sbmodel = EncoderDecoderASR.from_hparams(
-            source="speechbrain/asr-crdnn-rnnlm-librispeech",
-        )
+        # self.sbmodel = EncoderDecoderASR.from_hparams(
+        #     source="speechbrain/asr-crdnn-rnnlm-librispeech",
+        # )
 
         #Wav2Vec2 processor and model
         self.w2v2processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
