@@ -2,4 +2,3 @@ Flask==2.0.2
 speechbrain==0.5.11
 librosa==0.8.1
 transformers==4.15.0
-ffmpeg==1.4
