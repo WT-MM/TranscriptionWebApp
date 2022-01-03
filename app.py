@@ -27,7 +27,7 @@ def save_record():
     transcript = transcribe.w2v2(full_file_name)
     os.remove(full_file_name)
     ttext['w2v2']=transcript[0]
-    return redirect('index')
+    return render_template('index.html')
 
 @app.route('/_words', methods=['GET'])
 def words():

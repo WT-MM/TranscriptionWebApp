@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
     <div class="row">
         <h1 class="text-center">{% block title %} Audio Transcription Comparison {% endblock %}</h1>
@@ -64,6 +62,7 @@
         var form = new FormData();
         form.append('file', data, 'data.mp3');
         form.append('title', 'data.mp3');
+        console.log(data)
         $.ajax({
             type: 'POST',
             url: '/save-record',
@@ -71,8 +70,6 @@
             cache: false,
             processData: false,
             contentType: false
-        }).done(function(data) {
-            console.log(data);
         });
     }
 
