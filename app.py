@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 transcribe = ASR()
 
-ttext={"w2v2" : ""}
+ttext={"w2v2" : "", "sb":""}
 
 @app.route('/')
 def index():
@@ -20,20 +20,22 @@ def save_record():
         flash('No file part')
         return redirect(request.url)
     file = request.files['file']
-
     file_name = str(uuid.uuid4()) + ".mp3"
     full_file_name = os.path.join('tempfiles', file_name)
     file.save(full_file_name)
-    transcript = transcribe.w2v2(full_file_name)
+    w2v2text = transcribe.w2v2(full_file_name)
+    sbtext=transcribe.sb(full_file_name)
     os.remove(full_file_name)
-    ttext['w2v2']=transcript[0]
-    return render_template('index.html')
+    ttext['w2v2']=w2v2text[0]
+    ttext['sb']=sbtext
+    print(sbtext)
+    return '<h1>Success</h1>'
 
 @app.route('/_words', methods=['GET'])
 def words():
-    return jsonify(w2v2=ttext['w2v2'])
+    return jsonify(w2v2=ttext['w2v2'],sb=ttext['sb'])
 
-@app.errorhandler(404)
+@app.errorhandler(404) 
 def errorPage(e):
     return render_template('404.html'), 404
 
