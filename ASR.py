@@ -8,7 +8,7 @@ class ASR:
     def __init__(self):
         #SpeechBrain pretrained model
         self.sbmodel = EncoderDecoderASR.from_hparams(
-             source="speechbrain/asr-crdnn-rnnlm-librispeech",
+             source="speechbrain/asr-crdnn-rnnlm-librispeech",savedir="pretrained_models/EncoderDecoderASR"
         )
 
         #Wav2Vec2 processor and model
