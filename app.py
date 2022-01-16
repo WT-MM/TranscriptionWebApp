@@ -7,8 +7,6 @@ app = Flask(__name__)
 
 transcribe = ASR()
 
-ttext={"w2v2" : "", "sb":""}
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -30,11 +28,9 @@ def save_record():
     ttext['w2v2']=w2v2text[0]
     ttext['sb']=sbtext
     print(sbtext)
+    return "test", 400
     return jsonify(w2v2=w2v2text[0],sb=sbtext)
 
-@app.route('/_words', methods=['GET'])
-def words():
-    return jsonify(w2v2=ttext['w2v2'],sb=ttext['sb'])
 
 @app.errorhandler(404) 
 def errorPage(e):

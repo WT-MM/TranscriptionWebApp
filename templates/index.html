@@ -77,7 +77,7 @@
             processData: false,
             contentType: false,
             error: function(error){
-                console.log("Error: ${error}")
+                console.log("Error: " + error.responseText)
                 alert("Error encountered... please try again")
             }
         });
