@@ -19,6 +19,7 @@ def save_record():
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
+    ttext={"w2v2" : "", "sb":""}
     file = request.files['file']
     file_name = str(uuid.uuid4()) + ".mp3"
     full_file_name = os.path.join('tempfiles', file_name)
@@ -29,7 +30,7 @@ def save_record():
     ttext['w2v2']=w2v2text[0]
     ttext['sb']=sbtext
     print(sbtext)
-    return '<h1>Success</h1>'
+    return jsonify(w2v2=w2v2text[0],sb=sbtext)
 
 @app.route('/_words', methods=['GET'])
 def words():

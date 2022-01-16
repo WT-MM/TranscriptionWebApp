@@ -40,7 +40,7 @@
 <!--Audio Recording Code taken from https://github.com/duketemon/web-speech-recorder-->
 {% block extra %}
 <script>
-    const interval = setInterval(update_values, 5000)
+    const message = "Processing audio..."
     navigator
         .mediaDevices
         .getUserMedia({audio: true})
@@ -59,6 +59,8 @@
     }
 
     function sendData(data) {
+        $("#w2v2").text(message)
+        $("#sb").text(message)
         var form = new FormData();
         form.append('file', data, 'data.mp3');
         form.append('title', 'data.mp3');
@@ -67,6 +69,10 @@
             type: 'POST',
             url: '/save-record',
             data: form,
+            success: function(data){
+                $("#w2v2").text(data.w2v2)
+                $("#sb").text(data.sb)
+            },
             cache: false,
             processData: false,
             contentType: false
@@ -87,17 +93,6 @@
         stopRecording.disabled = true;
         rec.stop();
     };
-
-    function update_values(){
-        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-        $.getJSON(
-            $SCRIPT_ROOT+"/_words",
-            function(data) {
-                $("#w2v2").text(data.w2v2)
-                $("#sb").text(data.sb)
-            }
-        );
-    }
 
 </script>
 {% endblock %}
