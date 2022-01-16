@@ -75,7 +75,11 @@
             },
             cache: false,
             processData: false,
-            contentType: false
+            contentType: false,
+            error: function(error){
+                console.log("Error: ${error}")
+                alert("Error encountered... please try again")
+            }
         });
     }
 
