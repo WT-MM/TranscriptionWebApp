@@ -20,6 +20,7 @@ class ASR:
         )
 
         # d = ModelDownloader()
+        # # It may takes a while to download and build models
         # self.espmodel = Speech2Text(
         #     **d.download_and_unpack(espactual),
         #     device="cuda",

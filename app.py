@@ -24,11 +24,9 @@ def save_record():
     file.save(full_file_name)
     w2v2text = transcribe.w2v2(full_file_name)
     sbtext=transcribe.sb(full_file_name)
+    #espnet = transcribe.espnet(full_file_name)
     os.remove(full_file_name)
-    ttext['w2v2']=w2v2text[0]
-    ttext['sb']=sbtext
     print(sbtext)
-    return "test", 400
     return jsonify(w2v2=w2v2text[0],sb=sbtext)
 
 

@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="row">
-        <h1 class="text-center">{% block title %} Audio Transcription Comparison {% endblock %}</h1>
+        <h1 class="text-center display-4">{% block title %} Audio Transcription Comparison {% endblock %}</h1>
     </div>
     <div class="row">
         <div class="col-md-4 text-center">
@@ -29,8 +29,8 @@
     </div>
     <div class="row" style="margin-top: 10vh;">
         <div class="container text-center">
-            <button id="startRecording">Start recording</button>
-            <button id="stopRecording" disabled>Stop recording</button>
+            <button class="btn btn-outline-primary" id="startRecording">Start recording</button>
+            <button class="btn btn-outline-primary" id="stopRecording" disabled>Stop recording</button>
         </div>
     </div>
 {% endblock %}
