@@ -9,7 +9,7 @@
             <div class="main">
                 <h5 class="card-title">ESPnet</h5>
                 <div>Transcription:</div>
-                <div class="transcript" id="enet"></div>
+                <div class="transcript" id="espnet"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
@@ -102,6 +102,7 @@
     function sendData(data) {
         $("#w2v2").text(message)
         $("#sb").text(message)
+        $("#espnet").text(message)
         var form = new FormData();
         form.append('file', data, 'data.wav');
         console.log(data)
@@ -112,6 +113,7 @@
             success: function(data){
                 $("#w2v2").text(data.w2v2)
                 $("#sb").text(data.sb)
+                $("#espnet").text(data.espnet)
             },
             cache: false,
             processData: false,

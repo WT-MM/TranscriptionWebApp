@@ -4,32 +4,20 @@ import librosa
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 from speechbrain.pretrained import EncoderDecoderASR
 
-# from espnet2.bin.asr_inference import Speech2Text
-# from espnet_model_zoo.downloader import ModelDownloader
+from espnet2.bin.asr_inference import Speech2Text
 
 
 
 class ASR:
 
-    espactual = 'Shinji Watanabe/spgispeech_asr_train_asr_conformer6_n_fft512_hop_length256_raw_en_unnorm_bpe5000_valid.acc.ave'
-
+    espactual = "byan/librispeech_asr_train_asr_conformer_raw_bpe_batch_bins30000000_accum_grad3_optim_conflr0.001_sp"
     def __init__(self):
         #SpeechBrain pretrained model
         self.sbmodel = EncoderDecoderASR.from_hparams(
              source="speechbrain/asr-crdnn-rnnlm-librispeech",savedir="pretrained_models/EncoderDecoderASR"
         )
 
-        # d = ModelDownloader()
-        # self.espmodel = Speech2Text(
-        #     **d.download_and_unpack(espactual),
-        #     device="cuda",
-        #     minlenratio=0.0,
-        #     maxlenratio=0.0,
-        #     ctc_weight=0.3,
-        #     beam_size=10,
-        #     batch_size=0,
-        #     nbest=1
-        # )
+        self.espmodel = Speech2Text.from_pretrained(self.espactual)
 
         #Wav2Vec2 processor and model
         self.w2v2processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
@@ -54,8 +42,6 @@ class ASR:
 
     def w2v2(self, file):
         audio, rate = librosa.load(file, sr=16000)
-        print(audio.shape)
-        print(audio)
         input_values = self.w2v2processor(audio, return_tensors="pt", padding="longest", sampling_rate=16000).input_values     
         logits = self.w2v2model(input_values).logits
         predicted_ids = torch.argmax(logits, dim=-1)

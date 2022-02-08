@@ -16,10 +16,9 @@ def index():
 
 @app.route('/save-record', methods=['POST'])
 def save_record():
-    # check if the post request has the file part
-    # if 'file' not in request.files:
-    #     flash('No file part')
-    #     return redirect(request.url)
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
     
     ttext={"w2v2" : "", "sb":""}
     
@@ -33,9 +32,9 @@ def save_record():
     
     w2v2text = transcribe.w2v2(full_file_name)
     sbtext=transcribe.sb(full_file_name)
-
+    esptext = transcribe.espnet(full_file_name)
     os.remove(full_file_name)
-    return jsonify(w2v2=w2v2text[0],sb=sbtext)
+    return jsonify(w2v2=w2v2text[0],sb=sbtext, espnet=esptext)
 
 
 @app.errorhandler(404) 
