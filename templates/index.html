@@ -33,37 +33,77 @@
             <button class="btn btn-outline-primary" id="stopRecording" disabled>Stop recording</button>
         </div>
     </div>
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 {% endblock %}
 
 <!--TODO: Add time limit to recording-->
 
-<!--Audio Recording Code taken from https://github.com/duketemon/web-speech-recorder-->
 {% block extra %}
+
 <script>
+    URL = window.URL || window.webkitURL;
+
+    var gumStream;
+    var rec;
+    var input;
+    
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    var audioContext 
+
     const message = "Processing audio..."
-    navigator
-        .mediaDevices
-        .getUserMedia({audio: true})
-        .then(stream => { handlerFunction(stream) });
 
+    var recordButton = document.getElementById("startRecording");
+    var stopButton = document.getElementById("stopRecording");
+    
+    recordButton.addEventListener("click", startRecording);
+    stopButton.addEventListener("click", stopRecording);
+    
+    function startRecording() {
+        console.log("recordButton clicked");
+    
+        recordButton.disabled = true;
+        stopButton.disabled = false;
 
-    function handlerFunction(stream) {
-        rec = new MediaRecorder(stream);
-        rec.ondataavailable = e => {
-            audioChunks.push(e.data);
-            if (rec.state == "inactive") {
-                let blob = new Blob(audioChunks, {type: 'audio/mpeg-3'});
-                sendData(blob);
-            }
-        }
+        navigator.mediaDevices.getUserMedia({ audio: true, video:false }).then(function(stream) {
+            console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
+    
+            audioContext = new AudioContext({sampleRate : 16000});
+    
+            gumStream = stream;
+    
+            input = audioContext.createMediaStreamSource(stream);
+
+            rec = new Recorder(input,{numChannels:1})
+    
+            rec.record()
+    
+            console.log("Recording started");
+    
+        }).catch(function(err) {
+            recordButton.disabled = false;
+            stopButton.disabled = true;
+        });
     }
 
+    
+    function stopRecording() {
+        console.log("Recording stopped");
+    
+        stopButton.disabled = true;
+        recordButton.disabled = false;
+    
+        rec.stop();
+    
+        gumStream.getAudioTracks()[0].stop();
+
+        rec.exportWAV(sendData);
+    }
+    
     function sendData(data) {
         $("#w2v2").text(message)
         $("#sb").text(message)
         var form = new FormData();
-        form.append('file', data, 'data.mp3');
-        form.append('title', 'data.mp3');
+        form.append('file', data, 'data.wav');
         console.log(data)
         $.ajax({
             type: 'POST',
@@ -82,21 +122,6 @@
             }
         });
     }
-
-    startRecording.onclick = e => {
-        console.log('Recording started..');
-        startRecording.disabled = true;
-        stopRecording.disabled = false;
-        audioChunks = [];
-        rec.start();
-    };
-
-    stopRecording.onclick = e => {
-        console.log("Recording stopped.");
-        startRecording.disabled = false;
-        stopRecording.disabled = true;
-        rec.stop();
-    };
-
 </script>
+
 {% endblock %}

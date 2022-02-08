@@ -20,7 +20,6 @@ class ASR:
         )
 
         # d = ModelDownloader()
-        # # It may takes a while to download and build models
         # self.espmodel = Speech2Text(
         #     **d.download_and_unpack(espactual),
         #     device="cuda",
@@ -37,13 +36,13 @@ class ASR:
         self.w2v2model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
         
     def espnet(self, file):
-        data, rate = librosa.load(file, 16000)
+        data, rate = librosa.load(file, sr=16000)
         out = self.espmodel(data)
         text, *_ = out[0]
         return text
 
     def sb(self, file):
-        data, rate = librosa.load(file, 16000)  
+        data, rate = librosa.load(file, sr=16000)  
         data_tensor = torch.tensor(data)
         data_tensor = self.sbmodel.audio_normalizer(data_tensor, 16000)
         batch = data_tensor.unsqueeze(0)
@@ -55,7 +54,8 @@ class ASR:
 
     def w2v2(self, file):
         audio, rate = librosa.load(file, sr=16000)
-        #print(audio)
+        print(audio.shape)
+        print(audio)
         input_values = self.w2v2processor(audio, return_tensors="pt", padding="longest", sampling_rate=16000).input_values     
         logits = self.w2v2model(input_values).logits
         predicted_ids = torch.argmax(logits, dim=-1)
