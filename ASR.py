@@ -9,7 +9,7 @@ from espnet2.bin.asr_inference import Speech2Text
 
 
 class ASR:
-
+    #HuggingFace models
     espactual = "byan/librispeech_asr_train_asr_conformer_raw_bpe_batch_bins30000000_accum_grad3_optim_conflr0.001_sp"
     def __init__(self):
         #SpeechBrain pretrained model
