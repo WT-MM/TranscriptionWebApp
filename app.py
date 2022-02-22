@@ -14,6 +14,10 @@ transcribe = ASR()
 def index():
     return render_template('index.html')
 
+@app.route('/accuracy')
+def accuracy():
+    return render_template('accuracy.html')
+
 @app.route('/save-record', methods=['POST'])
 def save_record():
     if 'file' not in request.files:

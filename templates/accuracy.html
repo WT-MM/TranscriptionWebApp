@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="row" style="margin-top:5vh">
-        <h1 class="text-center display-4">{% block title %} Audio Transcription Comparison {% endblock %}</h1>
+        <h1 class="text-center display-4">{% block title %} Transcription Model Accuracy {% endblock %}</h1>
     </div>
     <div class="row">
         <div class="col-md-4 text-center">
@@ -10,7 +10,7 @@
                 <h5 class="card-title">ESPnet</h5>
                 <div>Transcription:</div>
                 <div class="transcript" id="espnet"></div>
-                <div id="esptime"></div>
+                <div class="check" id="espcheck"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
@@ -18,7 +18,7 @@
                 <h5 class="card-title">SpeechBrain</h5>
                 <div>Transcription:</div>
                 <div class="transcript" id="sb"></div>
-                <div id="sbtime"></div>
+                <div class="check" id="sbcheck"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
@@ -26,8 +26,14 @@
                 <h5 class="card-title">Wav2Vec2</h5>
                 <div>Transcription:</div>
                 <div class="transcript" id="w2v2"></div>
-                <div id="wtime"></div>
+                <div class="check" id="wcheck"></div>
             </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:5vh">
+        <div class="container text-center">
+            <input type="text" value="Spoken text" id="refText">
+            <p style="font-size:0.8rem;margin-top:1vh">Type your reference text into the input field and record yourself reading aloud from it</p>           
         </div>
     </div>
     <div class="row" style="margin-top: 10vh;">
@@ -41,10 +47,12 @@
             <button onclick="audio.play()" class="btn btn-outline-primary" id="playRecording" disabled>Play Recording</button>
         </div>
     </div>
+    <div class="row">
+        <footer style="margin-bottom:1vh;text-align:center;position:fixed;bottom:0">Similarity score calculated using Levenshtein distance</footer>
+    </div>
     <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 {% endblock %}
 
-<!--TODO: Add time limit to recording-->
 
 {% block extra %}
 
@@ -59,12 +67,13 @@
     var audioContext 
 
     const message = "Processing audio..."
-    const timeStart = "Time Taken: "
-    const timeEnd = " seconds"
+    const checkStart = "Similarity Score: "
+    const checkEnd = "%"
 
     var recordButton = document.getElementById("startRecording");
     var stopButton = document.getElementById("stopRecording");
     var playButton = document.getElementById("playRecording");
+    var spokenText = document.getElementById("refText");
 
     var audio;
     
@@ -115,9 +124,6 @@
     
     function sendData(data) {
         $(".transcript").text(message)
-        $("#esptime").text(timeStart)
-        $("#sbtime").text(timeStart)
-        $("#wtime").text(timeStart)
         audio = new Audio(window.URL.createObjectURL(data))
         playButton.disabled=false
         var form = new FormData();
@@ -131,10 +137,10 @@
                 $("#w2v2").text(data.w2v2)
                 $("#sb").text(data.sb)
                 $("#espnet").text(data.espnet)
-                $("#esptime").text(timeStart + data.esptime + timeEnd)
-                $("#sbtime").text(timeStart + data.sbtime + timeEnd)
-                $("#wtime").text(timeStart + data.wtime + timeEnd)
-                console.log(data.wtime)
+                $("#wcheck").text(checkStart + similarity(data.w2v2, spokenText.value) + checkEnd)
+                $("#sbcheck").text(checkStart + similarity(data.sb, spokenText.value) + checkEnd)
+                $("#espcheck").text(checkStart + similarity(data.espnet, spokenText.value) + checkEnd)
+
             },
             cache: false,
             processData: false,
@@ -145,6 +151,49 @@
             }
         });
     }
+
+
+    function similarity(s1, s2) {
+        var longer = s1.toString();
+        var shorter = s2.toString();
+        if (s1.length < s2.length) {
+            longer = s2;
+            shorter = s1;
+        }
+        var longerLength = longer.length;
+        if (longerLength == 0) {
+            return 1.0;
+        }
+        return Math.round((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength) * 10000)/100;
+    }
+
+    function editDistance(s1, s2) {
+        s1 = s1.toString().toLowerCase();
+        s2 = s2.toString().toLowerCase();
+
+        var costs = new Array();
+        for (var i = 0; i <= s1.length; i++) {
+            var lastValue = i;
+            for (var j = 0; j <= s2.length; j++) {
+            if (i == 0)
+                costs[j] = j;
+            else {
+                if (j > 0) {
+                var newValue = costs[j - 1];
+                if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                    newValue = Math.min(Math.min(newValue, lastValue),
+                    costs[j]) + 1;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
+                }
+            }
+            }
+            if (i > 0)
+            costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+    }
+
 </script>
 
 {% endblock %}
