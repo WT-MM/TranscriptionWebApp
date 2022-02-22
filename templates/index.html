@@ -10,6 +10,7 @@
                 <h5 class="card-title">ESPnet</h5>
                 <div>Transcription:</div>
                 <div class="transcript" id="espnet"></div>
+                <div id="esptime"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
@@ -17,6 +18,7 @@
                 <h5 class="card-title">SpeechBrain</h5>
                 <div>Transcription:</div>
                 <div class="transcript" id="sb"></div>
+                <div id="sbtime"></div>
             </div>
         </div>
         <div class="col-md-4 text-center">
@@ -24,6 +26,7 @@
                 <h5 class="card-title">Wav2Vec2</h5>
                 <div>Transcription:</div>
                 <div class="transcript" id="w2v2"></div>
+                <div id="wtime"></div>
             </div>
         </div>
     </div>
@@ -31,6 +34,11 @@
         <div class="container text-center">
             <button class="btn btn-outline-primary" id="startRecording">Start recording</button>
             <button class="btn btn-outline-primary" id="stopRecording" disabled>Stop recording</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top:5vh">
+        <div class="container text-center">
+            <button onclick="audio.play()" class="btn btn-outline-primary" id="playRecording" disabled>Play Recording</button>
         </div>
     </div>
     <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
@@ -54,6 +62,9 @@
 
     var recordButton = document.getElementById("startRecording");
     var stopButton = document.getElementById("stopRecording");
+    var playButton = document.getElementById("playRecording");
+
+    var audio;
     
     recordButton.addEventListener("click", startRecording);
     stopButton.addEventListener("click", stopRecording);
@@ -63,6 +74,7 @@
     
         recordButton.disabled = true;
         stopButton.disabled = false;
+        playButton.disabled=true;
 
         navigator.mediaDevices.getUserMedia({ audio: true, video:false }).then(function(stream) {
             console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
@@ -103,6 +115,8 @@
         $("#w2v2").text(message)
         $("#sb").text(message)
         $("#espnet").text(message)
+        audio = new Audio(window.URL.createObjectURL(data))
+        playButton.disabled=false
         var form = new FormData();
         form.append('file', data, 'data.wav');
         console.log(data)
@@ -114,6 +128,10 @@
                 $("#w2v2").text(data.w2v2)
                 $("#sb").text(data.sb)
                 $("#espnet").text(data.espnet)
+                $("#esptime").text(data.esptime)
+                $("#sbtime").text(data.sbtime)
+                $("#wtime").text(data.wtime)
+                console.log(data.wtime)
             },
             cache: false,
             processData: false,
