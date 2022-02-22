@@ -35,12 +35,16 @@ def save_record():
     # esptext = transcribe.espnet(full_file_name)
     espOut, sbOut, w2v2Out = transcribe.runAll(full_file_name)
     os.remove(full_file_name)
-    return jsonify(w2v2=w2v2Out[0], wtime=str(w2v2Out[1]), sb=sbOut[0], sbtime=str(sbOut[1]), espnet=espOut[0], esptime=str(espOut[1]))
+    return jsonify(w2v2=w2v2Out[0], wtime=prettifyTime(w2v2Out[1]), sb=sbOut[0], sbtime=prettifyTime(sbOut[1]), espnet=espOut[0], esptime=prettifyTime(espOut[1]))
 
 
 @app.errorhandler(404) 
 def errorPage(e):
     return render_template('404.html'), 404
+
+
+def prettifyTime(time):
+    return str(round(time, 3))
 
 if __name__ == '__main__':
     app.run(debug=True)

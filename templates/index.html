@@ -59,6 +59,8 @@
     var audioContext 
 
     const message = "Processing audio..."
+    const timeStart = "Time Taken: "
+    const timeEnd = " seconds"
 
     var recordButton = document.getElementById("startRecording");
     var stopButton = document.getElementById("stopRecording");
@@ -112,9 +114,14 @@
     }
     
     function sendData(data) {
+        $(".transcript").text(message)
+        /*
         $("#w2v2").text(message)
         $("#sb").text(message)
-        $("#espnet").text(message)
+        $("#espnet").text(message)*/
+        $("#esptime").text(timeStart)
+        $("#sbtime").text(timeStart)
+        $("#wtime").text(timeStart)
         audio = new Audio(window.URL.createObjectURL(data))
         playButton.disabled=false
         var form = new FormData();
@@ -128,9 +135,9 @@
                 $("#w2v2").text(data.w2v2)
                 $("#sb").text(data.sb)
                 $("#espnet").text(data.espnet)
-                $("#esptime").text(data.esptime)
-                $("#sbtime").text(data.sbtime)
-                $("#wtime").text(data.wtime)
+                $("#esptime").text(timeStart + data.esptime + timeEnd)
+                $("#sbtime").text(timeStart + data.sbtime + timeEnd)
+                $("#wtime").text(timeStart + data.wtime + timeEnd)
                 console.log(data.wtime)
             },
             cache: false,
