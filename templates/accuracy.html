@@ -47,6 +47,20 @@
             <button onclick="audio.play()" class="btn btn-outline-primary" id="playRecording" disabled>Play Recording</button>
         </div>
     </div>
+    <div class="row" style="margin-top:5vh;">
+        <div class="col-md-4" style="align-content:center">
+            <button onclick="trials = new Array()" class="btn btn-outline-primary">Clear Data</button>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check form-switch" style="padding-left:50%;">
+                <input class="form-check-input" type="checkbox" id="toggleLog">
+                <label class="form-check-label" for="toggleLog">Log data</label>
+              </div>
+        </div>
+        <div class="col-md-4" style="align-content:center;">
+            <button onclick="download()" class="btn btn-outline-primary">Download data</button>
+        </div>
+    </div>
     <div class="row">
         <footer style="margin-bottom:1vh;text-align:center;position:fixed;bottom:0">Similarity score calculated using Levenshtein distance</footer>
     </div>
@@ -74,8 +88,11 @@
     var stopButton = document.getElementById("stopRecording");
     var playButton = document.getElementById("playRecording");
     var spokenText = document.getElementById("refText");
+    var logButton = document.getElementById("toggleLog");
 
     var audio;
+
+    var trials = new Array();
     
     recordButton.addEventListener("click", startRecording);
     stopButton.addEventListener("click", stopRecording);
@@ -108,6 +125,17 @@
         });
     }
 
+    function download(){
+        let csvContent = "data:text/csv;charset=utf-8,Original Text, W2V2 Transcription, W2V2 Score, SB Transcription, SB Score, Espnet Transcription, Espnet Score\n" 
+            + trials.map(e => e.join(",")).join("\n");
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "data.csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+
     
     function stopRecording() {
         console.log("Recording stopped");
@@ -137,9 +165,16 @@
                 $("#w2v2").text(data.w2v2)
                 $("#sb").text(data.sb)
                 $("#espnet").text(data.espnet)
-                $("#wcheck").text(checkStart + similarity(data.w2v2, spokenText.value) + checkEnd)
-                $("#sbcheck").text(checkStart + similarity(data.sb, spokenText.value) + checkEnd)
-                $("#espcheck").text(checkStart + similarity(data.espnet, spokenText.value) + checkEnd)
+                let wscore = similarity(data.w2v2, spokenText.value);
+                let sbscore = similarity(data.sb, spokenText.value);
+                let espscore = similarity(data.espnet, spokenText.value);
+                $("#wcheck").text(checkStart + wscore + checkEnd)
+                $("#sbcheck").text(checkStart + sbscore + checkEnd)
+                $("#espcheck").text(checkStart + espscore + checkEnd)
+                if(logButton.checked){
+                    trials.push(new Array(spokenText.value, new Array(data.w2v2, wscore), new Array(data.sb, sbscore), new Array(data.espnet, espscore)))
+                    console.log(trials)
+                }
 
             },
             cache: false,

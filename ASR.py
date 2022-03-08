@@ -50,7 +50,7 @@ class ASR:
         input_values = self.w2v2processor(audio, return_tensors="pt", padding="longest", sampling_rate=16000).input_values     
         logits = self.w2v2model(input_values).logits
         predicted_ids = torch.argmax(logits, dim=-1)
-        return self.w2v2processor.batch_decode(predicted_ids), time.time() - wStart
+        return self.w2v2processor.batch_decode(predicted_ids)[0], time.time() - wStart
     
     def text_normalizer(text):
         text = text.upper()

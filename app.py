@@ -34,9 +34,6 @@ def save_record():
     with open(full_file_name, 'wb') as f_vid:
         f_vid.write(file.read())
     
-    # w2v2text = transcribe.w2v2(full_file_name)
-    # sbtext = transcribe.sb(full_file_name)
-    # esptext = transcribe.espnet(full_file_name)
     espOut, sbOut, w2v2Out = transcribe.runAll(full_file_name)
     os.remove(full_file_name)
     return jsonify(w2v2=w2v2Out[0], wtime=prettifyTime(w2v2Out[1]), sb=sbOut[0], sbtime=prettifyTime(sbOut[1]), espnet=espOut[0], esptime=prettifyTime(espOut[1]))
