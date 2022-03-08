@@ -32,7 +32,7 @@
     </div>
     <div class="row" style="margin-top:5vh">
         <div class="container text-center">
-            <input type="text" value="Spoken text" id="refText">
+            <input type="text" value="Spoken text" id="refText" style="width:35%;text-align:center;">
             <p style="font-size:0.8rem;margin-top:1vh">Type your reference text into the input field and record yourself reading aloud from it</p>           
         </div>
     </div>
@@ -48,16 +48,16 @@
         </div>
     </div>
     <div class="row" style="margin-top:5vh;">
-        <div class="col-md-4" style="align-content:center">
+        <div class="col d-flex justify-content-end">
             <button onclick="trials = new Array()" class="btn btn-outline-primary">Clear Data</button>
         </div>
-        <div class="col-md-4">
-            <div class="form-check form-switch" style="padding-left:50%;">
+        <div class="col d-flex justify-content-center">
+            <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="toggleLog">
                 <label class="form-check-label" for="toggleLog">Log data</label>
               </div>
         </div>
-        <div class="col-md-4" style="align-content:center;">
+        <div class="col d-flex justify-content-start">
             <button onclick="download()" class="btn btn-outline-primary">Download data</button>
         </div>
     </div>
@@ -146,7 +146,8 @@
         rec.stop();
     
         gumStream.getAudioTracks()[0].stop();
-
+        spokenText.disabled = true;
+        logButton.disabled = true;
         rec.exportWAV(sendData);
     }
     
@@ -173,6 +174,8 @@
                     trials.push(new Array(spokenText.value, new Array(data.w2v2, data.wscore), new Array(data.sb, data.sbscore), new Array(data.espnet, data.espscore)))
                     console.log(trials)
                 }
+                spokenText.disabled = false;
+                logButton.disabled = false;
 
             },
             cache: false,
